@@ -74,6 +74,8 @@ infra/systemd/        常驻应用及部署轮询服务
 
 ```bash
 sudo install -d -o admin -g admin /srv/cedar
+git clone --bare . /srv/cedar/repository.git
+git --git-dir=/srv/cedar/repository.git remote set-url origin https://github.com/mameikagou/cedar.git
 sudo install -d /usr/local/lib/cedar
 sudo install -m 644 scripts/deploy_agent.py /usr/local/lib/cedar/deploy_agent.py
 sudo install -m 644 infra/systemd/cedar* /etc/systemd/system/

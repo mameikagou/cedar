@@ -69,19 +69,38 @@ def prepare_release(sha: str) -> Path:
         raise ValueError("Invalid release commit")
     repository = ROOT / "repository.git"
     if not repository.exists():
-        command(["git", "clone", "--bare", f"https://github.com/{REPOSITORY}.git", str(repository)])
-    command(
-        [
-            "git",
-            f"--git-dir={repository}",
-            "fetch",
-            "origin",
-            "+refs/heads/main:refs/heads/main",
-        ]
+        command(["git", "init", "--bare", str(repository)])
+        command(
+            [
+                "git",
+                f"--git-dir={repository}",
+                "remote",
+                "add",
+                "origin",
+                f"https://github.com/{REPOSITORY}.git",
+            ]
+        )
+    existing = subprocess.run(
+        ["git", f"--git-dir={repository}", "cat-file", "-e", f"{sha}^{{commit}}"],
+        capture_output=True,
+        timeout=10,
+        check=False,
     )
-    head = command(["git", f"--git-dir={repository}", "rev-parse", "refs/heads/main"]).strip()
-    if head != sha:
-        raise ValueError("Main changed while preparing deployment")
+    if existing.returncode:
+        command(
+            [
+                "git",
+                "-c",
+                "http.lowSpeedLimit=1",
+                "-c",
+                "http.lowSpeedTime=20",
+                f"--git-dir={repository}",
+                "fetch",
+                "--depth=1",
+                "origin",
+                sha,
+            ]
+        )
     release = ROOT / "releases" / sha
     release.mkdir(parents=True, exist_ok=True)
     if not (release / ".prepared").is_file():
@@ -191,6 +210,9 @@ def poll_once() -> None:
             authorize(deployment, run, jobs, main_sha)
             report(deployment, "in_progress", "Preparing checked commit on production host")
             release = prepare_release(deployment["sha"])
+            if api("git/ref/heads/main")["object"]["sha"] != deployment["sha"]:
+                report(deployment, "inactive", "Superseded while preparing production release")
+                continue
             activate_release(release, ROOT / "current")
             report(deployment, "success", "API, PostgreSQL and frontend health checks passed")
             print(f"Deployed {deployment['sha']}", flush=True)
