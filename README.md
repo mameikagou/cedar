@@ -50,7 +50,7 @@ infra/systemd/             常驻应用及部署轮询服务
 
 沿用 analyze 的分层规范：路由 → API hooks → 请求层，页面组合 → 展示组件 → 通用 UI → 设计原语。UI 不直接请求接口，服务器数据只由 TanStack Query 管理，Zustand 不保存 API 数据。颜色通过语义 token 引用，主题支持浅色/深色。新增路由由 TanStack Rspack 插件自动生成路由树；`bun run typecheck` 也会先生成。
 
-字体搜索资料表明 Claude.ai 使用定制的 Anthropic Sans / Serif，历史版本使用过 Styrene / Tiempos。本项目先自托管 [Anthropic 官方公开指南](https://github.com/anthropics/skills/blob/main/skills/brand-guidelines/SKILL.md) 推荐的开源 Poppins / Lora（SIL OFL，许可证在 `frontend/public/fonts/`），中文使用系统字体。没有打包或外链 Anthropic 私有字体；`--font-ui` / `--font-display` 保留替换入口，若本机已安装 Anthropic 字体则优先使用。
+字体自托管 Claude 官方站当前使用的 Anthropic Sans / Serif / Mono 原版可变字体（常规及斜体，字重 300–800）。UI 使用 Sans，标题使用 Serif，代码字体入口使用 Mono；中文字符沿用系统字体回退。字体文件、来源和归属记录见 `frontend/public/fonts/SOURCES.md`，字体授权由项目所属公司管理。
 
 ## 数据库
 

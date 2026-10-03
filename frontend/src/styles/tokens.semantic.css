@@ -15,8 +15,9 @@
   --accent-error: var(--cedar-red);
   --accent-error-subtle: var(--stone-100);
   --ring-focus: var(--accent-primary);
-  --font-ui: 'Anthropic Sans', 'anthropicSans', Poppins, ui-sans-serif, system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-display: 'Anthropic Serif', 'anthropicSerif', 'Lora Variable', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, Georgia, serif;
+  --font-ui: 'Anthropic Sans', ui-sans-serif, system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-code: 'Anthropic Mono', ui-monospace, SFMono-Regular, Consolas, 'PingFang SC', 'Microsoft YaHei', monospace;
+  --font-display: 'Anthropic Serif', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, Georgia, serif;
 }
 .dark {
   color-scheme: dark;
