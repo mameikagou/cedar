@@ -21,7 +21,7 @@ def database_url() -> str | None:
 
 
 def frontend_directory() -> Path:
-    default = Path(__file__).resolve().parents[3] / "frontend"
+    default = Path(__file__).resolve().parents[3] / "frontend" / "dist"
     return Path(os.environ.get("CEDAR_WEB_DIR", str(default))).expanduser()
 
 

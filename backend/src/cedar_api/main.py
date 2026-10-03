@@ -1,11 +1,13 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import psycopg
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from psycopg_pool import AsyncConnectionPool, PoolTimeout
 from pydantic import BaseModel
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from cedar_api.config import database_url, frontend_directory, revision
 
@@ -58,6 +60,20 @@ async def ready(request: Request) -> dict[str, str]:
     return {"status": "ok", "database": "connected"}
 
 
+class SPAStaticFiles(StaticFiles):
+    """Serve client routes on refresh without hiding missing API or asset URLs."""
+
+    async def get_response(self, path: str, scope):
+        try:
+            return await super().get_response(path, scope)
+        except StarletteHTTPException as error:
+            if error.status_code != 404 or path == "api" or path.startswith("api/"):
+                raise
+            if Path(path).suffix or path.startswith("assets/"):
+                raise
+            return await super().get_response("index.html", scope)
+
+
 web_directory = frontend_directory()
 if web_directory.is_dir():
-    app.mount("/", StaticFiles(directory=web_directory, html=True), name="frontend")
+    app.mount("/", SPAStaticFiles(directory=web_directory, html=True), name="frontend")

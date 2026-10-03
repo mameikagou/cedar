@@ -20,6 +20,9 @@ jobs:
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: "24"
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: "1.3.3"
       - run: make setup check
         env:
           CEDAR_DATABASE_URL: ""

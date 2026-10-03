@@ -1,0 +1,19 @@
+:root {
+  --cedar-paper: #f5f2eb;
+  --cedar-surface: #fffdf8;
+  --cedar-ink: #25231f;
+  --cedar-muted: #716d64;
+  --cedar-line: #d9d3c7;
+  --cedar-green: #44785a;
+  --cedar-green-light: #8bb89b;
+  --cedar-red: #a32e24;
+  --cedar-red-light: #efa097;
+  --stone-100: #eeebe4;
+  --stone-200: #e5e0d5;
+  --stone-700: #393a33;
+  --stone-800: #282a24;
+  --stone-900: #1c1e19;
+  --stone-950: #141610;
+  --radius-md: 0.5rem;
+  --radius-xl: 1.125rem;
+}

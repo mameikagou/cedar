@@ -11,6 +11,7 @@ import tarfile
 import time
 import urllib.error
 import urllib.request
+from html.parser import HTMLParser
 from pathlib import Path
 
 REPOSITORY = "mameikagou/cedar"
@@ -114,6 +115,9 @@ def prepare_release(sha: str) -> Path:
             raise RuntimeError("Unable to export release source")
         with tarfile.open(fileobj=io.BytesIO(archive.stdout)) as source:
             source.extractall(release, filter="data")
+        bun = str(Path.home() / ".bun/bin/bun")
+        command([bun, "install", "--frozen-lockfile"], cwd=release / "frontend")
+        command([bun, "run", "build"], cwd=release / "frontend")
         command(
             [str(Path.home() / ".local/bin/uv"), "sync", "--frozen", "--no-dev"],
             cwd=release / "backend",
@@ -125,6 +129,37 @@ def prepare_release(sha: str) -> Path:
 
 def restart_service() -> None:
     command(["sudo", "-n", "systemctl", "restart", "cedar.service"])
+
+
+class FrontendAssets(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.paths: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        if tag == "script" and attributes.get("src"):
+            self.paths.append(attributes["src"])
+        if tag == "link" and attributes.get("rel") == "stylesheet":
+            self.paths.append(attributes["href"])
+
+
+def check_frontend_assets(homepage: str) -> bool:
+    assets = FrontendAssets()
+    assets.feed(homepage)
+    if not any(path.endswith(".js") for path in assets.paths):
+        return False
+    if not any(path.endswith(".css") for path in assets.paths):
+        return False
+    # Keep the previous static release verifiable during the first React rollout.
+    legacy_paths = {"/app.js", "/styles.css"} if 'id="root"' not in homepage else set()
+    for path in assets.paths:
+        if not path.startswith("/assets/") and path not in legacy_paths:
+            return False
+        with urllib.request.urlopen(f"{ORIGIN}{path}", timeout=3) as response:
+            if response.status != 200 or not response.read(1):
+                return False
+    return True
 
 
 def wait_ready(sha: str, timeout: float = 30) -> None:
@@ -142,6 +177,7 @@ def wait_ready(sha: str, timeout: float = 30) -> None:
                 and health.get("status") == "ok"
                 and ready.get("database") == "connected"
                 and "<title>Cedar</title>" in homepage
+                and check_frontend_assets(homepage)
             ):
                 return
         except (OSError, urllib.error.URLError, ValueError):

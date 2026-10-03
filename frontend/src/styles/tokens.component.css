@@ -1,0 +1,4 @@
+:root {
+  --button-ghost-hover: var(--bg-hover);
+  --shadow-elevated: 0 8px 32px color-mix(in srgb, var(--text-primary) 10%, transparent);
+}

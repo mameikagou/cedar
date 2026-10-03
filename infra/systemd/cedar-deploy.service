@@ -8,6 +8,6 @@ Type=oneshot
 User=admin
 Group=admin
 WorkingDirectory=/srv/cedar
-Environment=PATH=/home/admin/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/home/admin/.nvm/versions/node/v24.16.0/bin:/home/admin/.bun/bin:/home/admin/.local/bin:/usr/local/bin:/usr/bin:/bin
 ExecStart=/usr/bin/python3 /usr/local/lib/cedar/deploy_agent.py --once
 TimeoutStartSec=10min
