@@ -62,7 +62,7 @@ infra/systemd/             常驻应用及部署轮询服务
 
 ## 部署
 
-访问 <https://frontend.mrlonely.top>，沿用原有 Cloudflare Access 登录保护。现有 Tunnel 指向本机 `127.0.0.1:9483`，Cedar 同源提供前端和 API。
+访问 <https://cedar.mrlonely.top>，沿用原有 Cloudflare Access 登录保护。现有 Tunnel 指向本机 `127.0.0.1:9483`，Cedar 同源提供前端和 API。
 
 - PR 运行 CI；`main` 推送或手动触发成功后，GitHub 托管 runner 请求生产部署。
 - 本机服务验证请求仓库、`main` commit、工作流来源及 CI 成功结果，只部署精确 commit。

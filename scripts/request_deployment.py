@@ -34,7 +34,7 @@ def main() -> None:
             "environment": "production",
             "production_environment": True,
             "payload": {"application": "cedar", "run_id": int(os.environ["GITHUB_RUN_ID"])},
-            "description": "Deploy checked main commit to frontend.mrlonely.top",
+            "description": "Deploy checked main commit to cedar.mrlonely.top",
         },
     )
     endpoint = f"repos/{repository}/deployments/{deployment['id']}/statuses"
@@ -52,7 +52,7 @@ def main() -> None:
             print(f"Deployment: {state}", flush=True)
             previous_state = state
         if state == "success":
-            print("Cedar deployed: https://frontend.mrlonely.top", flush=True)
+            print("Cedar deployed: https://cedar.mrlonely.top", flush=True)
             return
         if state == "inactive":
             print("Deployment superseded by newer main commit", flush=True)

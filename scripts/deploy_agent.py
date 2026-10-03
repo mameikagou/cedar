@@ -17,7 +17,7 @@ from pathlib import Path
 REPOSITORY = "mameikagou/cedar"
 ROOT = Path("/srv/cedar")
 ORIGIN = "http://127.0.0.1:9483"
-PUBLIC_URL = "https://frontend.mrlonely.top"
+PUBLIC_URL = "https://cedar.mrlonely.top"
 SHA_PATTERN = re.compile(r"[0-9a-f]{40}")
 TERMINAL_STATES = {"success", "failure", "error", "inactive"}
 
