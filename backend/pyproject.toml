@@ -1,0 +1,35 @@
+[project]
+name = "cedar-api"
+version = "0.1.0"
+description = "Cedar Python API"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115,<1",
+    "psycopg[binary,pool]>=3.2,<4",
+    "python-dotenv>=1,<2",
+    "uvicorn[standard]>=0.30,<1",
+]
+
+[dependency-groups]
+dev = [
+ "httpx2>=2,<3",
+ "pytest>=8,<10",
+ "ruff>=0.9,<1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cedar_api"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

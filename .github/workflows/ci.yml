@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          version: "0.12.5"
+          enable-cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+      - run: make setup check
+        env:
+          CEDAR_DATABASE_URL: ""
