@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from psycopg_pool import AsyncConnectionPool, PoolTimeout
 from pydantic import BaseModel
 
-from cedar_api.config import database_url, frontend_directory
+from cedar_api.config import database_url, frontend_directory, revision
 
 
 @asynccontextmanager
@@ -37,11 +37,12 @@ app = FastAPI(title="Cedar API", version="0.1.0", lifespan=lifespan)
 class HealthResponse(BaseModel):
     status: str
     service: str
+    revision: str
 
 
 @app.get("/api/health", response_model=HealthResponse, tags=["health"])
 def health() -> HealthResponse:
-    return HealthResponse(status="ok", service="cedar-api")
+    return HealthResponse(status="ok", service="cedar-api", revision=revision())
 
 
 @app.get("/api/ready", tags=["health"])

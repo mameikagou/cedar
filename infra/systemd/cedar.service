@@ -1,0 +1,23 @@
+[Unit]
+Description=Cedar frontend and FastAPI
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=admin
+Group=admin
+WorkingDirectory=/srv/cedar/current/backend
+Environment=CEDAR_ENV_FILE=/home/admin/.config/cedar/runtime.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/srv/cedar/current/backend/.venv/bin/python -m uvicorn cedar_api.main:app --host 127.0.0.1 --port 9483 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=20
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target

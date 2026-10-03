@@ -1,8 +1,9 @@
-name: CI
+name: CI / CD
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -22,3 +23,21 @@ jobs:
       - run: make setup check
         env:
           CEDAR_DATABASE_URL: ""
+
+  deploy:
+    needs: check
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: cedar-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Deploy and verify production
+        run: python3 scripts/request_deployment.py
+        env:
+          GH_TOKEN: ${{ github.token }}

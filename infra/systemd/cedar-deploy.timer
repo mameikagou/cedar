@@ -1,0 +1,11 @@
+[Unit]
+Description=Watch for Cedar GitHub Actions deployments
+
+[Timer]
+OnBootSec=15s
+OnUnitInactiveSec=20s
+AccuracySec=1s
+Unit=cedar-deploy.service
+
+[Install]
+WantedBy=timers.target

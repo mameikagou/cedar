@@ -1,0 +1,13 @@
+[Unit]
+Description=Process checked Cedar production deployment requests
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=admin
+Group=admin
+WorkingDirectory=/srv/cedar
+Environment=PATH=/home/admin/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 /usr/local/lib/cedar/deploy_agent.py --once
+TimeoutStartSec=10min

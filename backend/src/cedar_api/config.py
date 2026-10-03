@@ -23,3 +23,8 @@ def database_url() -> str | None:
 def frontend_directory() -> Path:
     default = Path(__file__).resolve().parents[3] / "frontend"
     return Path(os.environ.get("CEDAR_WEB_DIR", str(default))).expanduser()
+
+
+def revision() -> str:
+    revision_file = Path(__file__).resolve().parents[3] / ".cedar-revision"
+    return revision_file.read_text().strip() if revision_file.is_file() else "development"
