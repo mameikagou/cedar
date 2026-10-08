@@ -49,7 +49,7 @@ export const KlineChart = forwardRef<KlineChartHandle, Props>(function KlineChar
       layout: { background: { type: ColorType.Solid, color: colors.background }, textColor: colors.text, fontFamily: colors.font, fontSize: 11, attributionLogo: true, panes: { separatorColor: colors.grid, separatorHoverColor: colors.crosshair } },
       crosshair: { mode: CrosshairMode.Normal },
       rightPriceScale: { borderVisible: false, minimumWidth: 58 },
-      timeScale: { borderVisible: false, rightOffset: 4, minBarSpacing: 2, fixLeftEdge: true, timeVisible: false, lockVisibleTimeRangeOnResize: true },
+      timeScale: { borderVisible: false, rightOffset: 4, minBarSpacing: 0.1, fixLeftEdge: true, timeVisible: false, lockVisibleTimeRangeOnResize: true },
       localization: { locale: 'zh-CN', dateFormat: 'yyyy-MM-dd' },
       handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
       handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },
