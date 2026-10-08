@@ -1,4 +1,8 @@
 :root {
   --button-ghost-hover: var(--bg-hover);
   --shadow-elevated: 0 8px 32px color-mix(in srgb, var(--text-primary) 10%, transparent);
+  --workspace-sidebar-width: 216px;
+  --workspace-content-width: 1600px;
+  --kline-height: 560px;
+  --kline-height-mobile: 430px;
 }

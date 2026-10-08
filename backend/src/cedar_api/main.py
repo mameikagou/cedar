@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from cedar_api.config import database_url, frontend_directory, revision
+from cedar_api.market import MarketDataError, MarketService, MarketSnapshot, initialize_market
 
 
 @asynccontextmanager
@@ -17,6 +18,7 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     dsn = database_url()
     if not dsn:
         application.state.db_pool = None
+        application.state.market = None
         yield
         return
     async with AsyncConnectionPool(
@@ -30,6 +32,8 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     ) as pool:
         await pool.wait(timeout=10)
         application.state.db_pool = pool
+        await initialize_market(pool)
+        application.state.market = MarketService(pool)
         yield
 
 
@@ -45,6 +49,19 @@ class HealthResponse(BaseModel):
 @app.get("/api/health", response_model=HealthResponse, tags=["health"])
 def health() -> HealthResponse:
     return HealthResponse(status="ok", service="cedar-api", revision=revision())
+
+
+@app.get("/api/market/kline", response_model=MarketSnapshot, tags=["market"])
+async def kline(request: Request) -> MarketSnapshot:
+    service = request.app.state.market
+    if service is None:
+        raise HTTPException(status_code=503, detail="行情数据库尚未配置。")
+    try:
+        return await service.snapshot()
+    except MarketDataError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from None
+    except (psycopg.Error, PoolTimeout):
+        raise HTTPException(status_code=503, detail="行情数据库暂时不可用。") from None
 
 
 @app.get("/api/ready", tags=["health"])

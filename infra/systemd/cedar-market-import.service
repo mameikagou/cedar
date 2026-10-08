@@ -1,0 +1,18 @@
+[Unit]
+Description=Import published analyze2quant OHLCV into Cedar PostgreSQL
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=admin
+Group=admin
+WorkingDirectory=/srv/cedar/current/backend
+Environment=CEDAR_ENV_FILE=/home/admin/.config/cedar/market.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/srv/cedar/current/backend/.venv/bin/python -m cedar_api.import_market
+TimeoutStartSec=5min
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only

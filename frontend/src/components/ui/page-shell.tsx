@@ -9,7 +9,7 @@ interface PageShellProps {
 
 export function PageShell({ children, className }: PageShellProps) {
   return (
-    <Surface variant="canvas" className={cn('page-shell', className)}>
+    <Surface variant="canvas" className={cn('mx-auto w-[min(960px,calc(100%-36px))] py-12 sm:py-18', className)}>
       <div className="w-full">{children}</div>
     </Surface>
   )

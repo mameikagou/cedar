@@ -1,0 +1,19 @@
+:root {
+  --chart-background: var(--bg-surface);
+  --chart-text: var(--text-muted);
+  --chart-grid: var(--border-subtle);
+  --chart-crosshair: var(--text-secondary);
+  --chart-up: var(--market-positive);
+  --chart-down: var(--market-negative);
+  --chart-volume-up: var(--chart-up);
+  --chart-volume-down: var(--chart-down);
+  --chart-ma-5: var(--indicator-short);
+  --chart-ma-10: var(--indicator-medium);
+  --chart-ma-20: var(--indicator-long);
+}
+[data-market='cn'] {
+  --chart-up: var(--market-negative);
+  --chart-down: var(--market-positive);
+  --chart-volume-up: var(--chart-up);
+  --chart-volume-down: var(--chart-down);
+}

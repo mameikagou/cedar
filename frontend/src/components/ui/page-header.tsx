@@ -19,19 +19,19 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <header className={cn('page-header flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between', className)}>
+    <header className={cn('flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between', className)}>
       <div className="max-w-3xl space-y-2">
         {eyebrow && (
-          <div className="eyebrow">
+          <div className="text-xs font-bold tracking-widest text-accent">
             {eyebrow}
           </div>
         )}
         <div className="space-y-1">
-          <h1 className="page-title">
+          <h1 className="my-4 font-serif text-4xl leading-tight font-medium sm:text-6xl">
             {title}
           </h1>
           {description && (
-            <p className="page-description">
+            <p className="text-lg leading-relaxed text-text-secondary">
               {description}
             </p>
           )}

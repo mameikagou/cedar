@@ -1,4 +1,4 @@
-.PHONY: setup dev dev-backend dev-frontend build check
+.PHONY: setup dev dev-backend dev-frontend build check import-market
 
 BUN ?= bun
 
@@ -18,9 +18,14 @@ dev-frontend:
 build:
 	cd frontend && $(BUN) run build
 
+import-market:
+	cd backend && uv run --frozen python -m cedar_api.import_market
+
 check:
 	cd frontend && $(BUN) run typecheck
 	cd frontend && $(BUN) run lint
+	cd frontend && $(BUN) run check:styles
+	cd frontend && $(BUN) test
 	$(MAKE) build
 	cd backend && uv run --frozen ruff check .
 	cd backend && uv run --frozen ruff format --check .

@@ -15,10 +15,10 @@ function buildUrl(path: string, params?: Params) {
   })
   return url
 }
-async function request<T>(path: string, init: RequestInit = {}, params?: Params): Promise<T> {
+async function request<T>(path: string, init: RequestInit = {}, params?: Params, timeoutMs = 8000): Promise<T> {
   const response = await fetch(buildUrl(path, params), {
     ...init,
-    signal: init.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(8000)]) : AbortSignal.timeout(8000),
+    signal: init.signal ? AbortSignal.any([init.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs),
   })
   if (!response.ok) {
     let detail = '请求失败，请稍后重试。'
@@ -28,6 +28,6 @@ async function request<T>(path: string, init: RequestInit = {}, params?: Params)
   }
   return response.json() as Promise<T>
 }
-export const apiGet = <T>(path: string, params?: Params, signal?: AbortSignal) => request<T>(path, { signal }, params)
+export const apiGet = <T>(path: string, params?: Params, signal?: AbortSignal, timeoutMs?: number) => request<T>(path, { signal }, params, timeoutMs)
 export const apiPost = <T>(path: string, body: unknown) => request<T>(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 export const apiPatch = <T>(path: string, body: unknown) => request<T>(path, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })

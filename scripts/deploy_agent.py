@@ -26,9 +26,22 @@ class GitHubAPIError(RuntimeError):
     pass
 
 
-def command(arguments: list[str], *, cwd: Path | None = None, data: str | None = None) -> str:
+def command(
+    arguments: list[str],
+    *,
+    cwd: Path | None = None,
+    data: str | None = None,
+    environment: dict[str, str] | None = None,
+) -> str:
     result = subprocess.run(
-        arguments, cwd=cwd, input=data, text=True, capture_output=True, timeout=180, check=False
+        arguments,
+        cwd=cwd,
+        input=data,
+        text=True,
+        capture_output=True,
+        timeout=180,
+        check=False,
+        env=environment,
     )
     if result.returncode:
         raise RuntimeError(f"Command failed: {Path(arguments[0]).name}")
@@ -124,6 +137,17 @@ def prepare_release(sha: str) -> Path:
         )
         (release / ".cedar-revision").write_text(sha + "\n")
         (release / ".prepared").touch()
+    if (release / "backend/src/cedar_api/import_market.py").is_file():
+        # Initial import/update is completed before serving the new frontend.
+        # Lake credentials live in the importer's own private environment file.
+        command(
+            [str(release / "backend/.venv/bin/python"), "-m", "cedar_api.import_market"],
+            cwd=release / "backend",
+            environment={
+                **os.environ,
+                "CEDAR_ENV_FILE": str(Path.home() / ".config/cedar/market.env"),
+            },
+        )
     return release
 
 
@@ -163,6 +187,7 @@ def check_frontend_assets(homepage: str) -> bool:
 
 
 def wait_ready(sha: str, timeout: float = 30) -> None:
+    requires_market = (ROOT / "releases" / sha / "backend/src/cedar_api/import_market.py").is_file()
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         try:
@@ -178,12 +203,30 @@ def wait_ready(sha: str, timeout: float = 30) -> None:
                 and ready.get("database") == "connected"
                 and "<title>Cedar</title>" in homepage
                 and check_frontend_assets(homepage)
+                and (not requires_market or check_market_snapshot())
             ):
                 return
         except (OSError, urllib.error.URLError, ValueError):
             pass
         time.sleep(1)
     raise RuntimeError("Release did not pass API, database and homepage health checks")
+
+
+def check_market_snapshot() -> bool:
+    with urllib.request.urlopen(f"{ORIGIN}/api/market/kline", timeout=3) as response:
+        snapshot = json.load(response)
+    candles = snapshot.get("candles")
+    return bool(
+        snapshot.get("symbol") == "601975.SH"
+        and snapshot.get("sourceDataset") == "a_share.daily_1d"
+        and snapshot.get("sourceVersion")
+        and snapshot.get("syncedAt")
+        and snapshot.get("volumeUnit") == "share"
+        and snapshot.get("amountUnit") == "CNY"
+        and isinstance(candles, list)
+        and candles
+        and candles[-1].get("time") == snapshot.get("latestTradingDate")
+    )
 
 
 def switch_current(current: Path, target: Path) -> None:

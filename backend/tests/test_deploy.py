@@ -60,3 +60,32 @@ def test_deployment_rejects_untrusted_or_unchecked_commits(invalid_case: str) ->
         main_sha = "b" * 40
     with pytest.raises(ValueError):
         agent.authorize(deployment, run, jobs, main_sha)
+
+
+@pytest.mark.parametrize("case", ["valid", "no_bars", "wrong_source", "date_mismatch"])
+def test_market_health_requires_imported_product_snapshot(monkeypatch, case):
+    import io
+    import json
+
+    snapshot = {
+        "symbol": "601975.SH",
+        "sourceDataset": "a_share.daily_1d",
+        "sourceVersion": "source-version",
+        "syncedAt": "2026-10-08T15:00:00Z",
+        "volumeUnit": "share",
+        "amountUnit": "CNY",
+        "latestTradingDate": "2026-09-18",
+        "candles": [{"time": "2026-09-18"}],
+    }
+    if case == "no_bars":
+        snapshot["candles"] = []
+    elif case == "wrong_source":
+        snapshot["sourceDataset"] = "direct-provider"
+    elif case == "date_mismatch":
+        snapshot["latestTradingDate"] = "2026-10-08"
+    monkeypatch.setattr(
+        agent.urllib.request,
+        "urlopen",
+        lambda *args, **kwargs: io.BytesIO(json.dumps(snapshot).encode()),
+    )
+    assert agent.check_market_snapshot() is (case == "valid")

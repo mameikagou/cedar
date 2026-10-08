@@ -18,20 +18,28 @@
   --font-ui: 'Anthropic Sans', ui-sans-serif, system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-code: 'Anthropic Mono', ui-monospace, SFMono-Regular, Consolas, 'PingFang SC', 'Microsoft YaHei', monospace;
   --font-display: 'Anthropic Serif', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, Georgia, serif;
+  --market-positive: var(--green-500);
+  --market-negative: var(--red-500);
+  --indicator-short: var(--amber-500);
+  --indicator-medium: var(--violet-500);
+  --indicator-long: var(--cedar-green);
 }
 .dark {
   color-scheme: dark;
-  --bg-canvas: var(--stone-950);
-  --bg-surface: var(--stone-900);
-  --bg-elevated: var(--stone-800);
-  --bg-hover: var(--stone-800);
-  --bg-active: var(--stone-700);
-  --bg-selected: var(--stone-700);
-  --text-primary: var(--cedar-paper);
-  --text-secondary: var(--cedar-line);
-  --text-muted: var(--cedar-line);
-  --border-subtle: var(--stone-700);
-  --accent-primary: var(--cedar-green-light);
+  --bg-canvas: var(--navy-950);
+  --bg-surface: var(--navy-900);
+  --bg-elevated: var(--navy-800);
+  --bg-hover: var(--navy-800);
+  --bg-active: var(--navy-700);
+  --bg-selected: var(--navy-800);
+  --text-primary: var(--navy-50);
+  --text-secondary: var(--navy-200);
+  --text-muted: var(--navy-400);
+  --border-subtle: var(--navy-700);
+  --accent-primary: var(--blue-300);
   --accent-error: var(--cedar-red-light);
-  --text-inverse: var(--stone-950);
+  --text-inverse: var(--navy-950);
+  --indicator-short: var(--amber-300);
+  --indicator-medium: var(--violet-300);
+  --indicator-long: var(--blue-300);
 }

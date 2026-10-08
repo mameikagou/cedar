@@ -17,7 +17,7 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true, allowExportNames: ['Route'] }],
     },
   },
-  { files: ['*.mjs'], languageOptions: { globals: globals.node } },
+  { files: ['**/*.mjs'], languageOptions: { globals: globals.node } },
   {
     files: ['src/routes/**/*.tsx'],
     // TanStack's Rspack plugin owns route module refresh and code splitting.
@@ -26,7 +26,10 @@ export default tseslint.config(
   {
     files: ['src/routes/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
     rules: {
-      'no-restricted-imports': ['error', { patterns: [{ group: ['@/api/*'], message: 'Use hooks/api at the route layer; components receive data through props.' }] }],
+      'no-restricted-imports': ['error', { patterns: [
+        { group: ['@/api/*'], message: 'Use hooks/api at the route layer; components receive data through props.' },
+        { group: ['*.css', '**/*.css'], message: 'Business components must use Tailwind; CSS is only for global configuration.' },
+      ] }],
       'no-restricted-globals': ['error', { name: 'fetch', message: 'Network requests belong in api/client.' }],
     },
   },

@@ -15,7 +15,7 @@ export function HomeView({ service, database, refreshing, onRefresh }: HomeViewP
   return (
     <PageShell>
       <PageHeader eyebrow="CEDAR" title="从这里开始。" description="Cedar 已准备好，接下来一起把想法做出来。" />
-      <section aria-label="连接状态" className="connection-grid">
+      <section aria-label="连接状态" className="mt-10 mb-6 grid gap-4 sm:grid-cols-2">
         <StatusCard id="api-status" eyebrow="SERVICE" title="服务连接" successText="服务已连接" state={service} />
         <StatusCard id="database-status" eyebrow="DATABASE" title="数据连接" successText="数据库已连接" state={database} />
       </section>
